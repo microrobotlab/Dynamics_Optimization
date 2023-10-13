@@ -1,0 +1,19 @@
+name = "active-brownian-particles"
+
+[deps]
+BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
+CellListMap = "69e1c6dd-3888-40e6-b3c8-31ac5f578864"
+Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
+DrWatson = "634d3b9d-ee7a-5ddf-bec9-22491ea816e1"
+FileIO = "5789e2e9-d7fb-5bc7-8068-2c6fae9b9549"
+Indicators = "70c4c096-89a6-5ec6-8236-da8aa3bd86fd"
+JLD2 = "033835bb-8acc-5ee8-8aae-3f567f8a3819"
+Optim = "429524aa-4258-5aef-a3af-852621145aeb"
+ProfileView = "c46f51b8-102a-5cf2-8d2c-8597cb0e0da7"
+ProgressBars = "49802e3a-d2f1-5c88-81d8-b72133a6f568"
+StatsPlots = "f3b207a7-027a-5e70-b257-86293d7955fd"
+Temporal = "a110ec8f-48c8-5d59-8f7e-f91bc4cc0c3d"
+
+[compat]
+DrWatson = "2.12.7"
+julia = "1.9.1"
