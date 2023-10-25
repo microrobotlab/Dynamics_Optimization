@@ -62,8 +62,7 @@ function run_multiple(
     verbose::Bool=true
     )
     
-    # experiment_marker = instance_marker(parameters=parameters, wall_condition=wall_condition)
-    experiment_marker = "prov"
+    experiment_marker = instance_marker(parameters=parameters, wall_condition=wall_condition)
     # automatic output file name generation depending on parameters 
     simulation_folder_path = datadir("sims", experiment_marker)
     mkdir(simulation_folder_path)
