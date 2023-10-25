@@ -10,22 +10,21 @@ include(srcdir("ABP output.jl"))
 # CALL RUNNER WITH ARGUMENTS 
 
 # simulation parameters
-Nt = 1000; Np = 500; L = 100.; R = 1.5; v = 10.
+Nt = 10000; Np = 100; L = 100.; R = 1.5; v = 10.
 
 # macro-parameters
-wall_condition = "periodic"; nb_runs = 1
+wall_condition = "periodic"; nb_runs = 20
 
 # CSV export parameters: `save_stride` is the stride for timesteps while saving simulator output 
 # /!\ SAVE WON'T BE TAKEN INTO ACCOUNT FOR nb_runs > 1
-save = false; save_stride = 10 
+save = false; save_stride = 1 
 
 # animation parameters: `animation_stride` stride for the animation, by default `animation_filename` will have the same marker as 
 # simulation file output (see file ), no choice in the case of file export (will be based on the data filename) 
-animate = false; animation_filename = nothing; animation_stride = 10
+animate = false; animation_filename = nothing; animation_stride = 100
 
-# parallization parameters: (N, M) number of cells (rows, columns), (x_min, x_max, y_min, y_max) considered area for the cell division
-ϵ = 0.5 # little margin for the region
-N = 1; M = 1; # x_min = -L/2 - ϵ; x_max = L/2 + ϵ; y_min = -L/2 - ϵ; y_max = L/2 + ϵ
+# parallelization parameters: (N, M) number of cells (rows, columns)
+N = 16; M = 16;
 
 # simulation progress bar display
 verbose = true

@@ -9,9 +9,16 @@ include(projectdir("src", "ABP output.jl"))
 include(projectdir("src", "ABP VOP.jl"))
 
 
-function mean_pf(parameters::NamedTuple, nb_runs; wall_condition::String)
+function mean_pf(parameters::NamedTuple; wall_condition::String, nb_runs::Integer, N::Integer, M::Integer)
     # call simulator and get corresponding generated folder path
-    simulation_folder_path = run(parameters, nb_runs; wall_condition=wall_condition)
+    simulation_folder_path = run_multiple(
+        parameters; wall_condition=wall_condition, 
+        nb_runs=nb_runs, 
+        save_stride=1,
+        animate=false,
+        N=N, M=M,
+        verbose=true
+        )
     # compute mean polarization factor from outputed files
     mean_pf_vec = Array{Float64}([])
     for filename in readdir(simulation_folder_path)
@@ -23,5 +30,7 @@ function mean_pf(parameters::NamedTuple, nb_runs; wall_condition::String)
     # remove folder (because a lot will be generated over optimization)
     rm(simulation_folder_path; recursive=true)
     # return /!\ MINUS THE AVERAGE (here we minimize so need to invert)
-    return - mean(mean_pf_vec)
+    obj_value = - mean(mean_pf_vec)
+    println("OBJECTIVE VALUE: $obj_value")
+    return obj_value
 end

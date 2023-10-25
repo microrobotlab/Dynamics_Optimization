@@ -10,27 +10,7 @@ include(srcdir("ABP output.jl"))
 # for comparison with original version
 include("ABP main_original.jl")
 include(srcdir("ABP file.jl"))
-
-
-# ----- THE STRUCTURE THAT WILL BE USED TO SAVE RESULTS
-# For more information about BenchmarkTools setup, see "Parameters" section of the BenchmarkTools Manual at
-# https://juliaci.github.io/BenchmarkTools.jl/stable/manual/#Benchmark-Parameters and definitions at
-# https://juliaci.github.io/BenchmarkTools.jl/stable/manual/#Manual)
-struct BenchmarkingInstance
-    # simulation parameters
-    Nt::Int64
-    Np::Int64                   
-    L::Float64                  
-	R::Float64  
-	v::Float64 	
-    # parallelization parameters 
-    # number of horizontal/vertical divisions,
-    # set to "original" for original main
-    N::Union{Int64, String}
-    M::Union{Int64, String}
-    # parameters and results of the benchmarking
-    benchmarking::BenchmarkTools.Trial
-end
+include("benchmarking_struct.jl")
 
 
 # ----- FIXED PARAMETERS
@@ -44,7 +24,7 @@ wall_condition = "periodic"
 
 # ----- PARAMETERS THAT WILL VARY DURING BENCHMARKING
 Np_list = [10]
-nb_div_cells_list = vcat("original", 1:16)
+nb_div_cells_list = vcat(15:16)
 
 
 # FIX RANDOM SEED

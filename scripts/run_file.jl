@@ -22,9 +22,8 @@ save_stride = 10
 # animation parameters: `animation_stride` stride for the animation
 animate = true; animation_filename = nothing; animation_stride = 10
 
-# parallization parameters: (N, M) number of cells (rows, columns), (x_min, x_max, y_min, y_max) considered area for the cell division
-ϵ = 0.1 # little margin for the region
-N = 16; M = 16; # x_min = -L/2; x_max = L/2; y_min = -L/2; y_max = L/2
+# parallelization parameters: (N, M) number of cells (rows, columns)
+N = 16; M = 16;
 
 # simulation progress bar display
 verbose = false
