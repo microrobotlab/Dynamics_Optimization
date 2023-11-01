@@ -12,7 +12,7 @@ include("utils_optimization.jl")
 
 
 # ----- SIMULATOR HYPERPARAMETERS AND FIXED PARAMETERS
-# N, M are the number of vertical, horizontal divisions of the space; 
+# N, M are the number of vertical, horizontal divisions of the space for parallel computing; 
 # :auto mode infer maximum values for it. Those maximum values depend on L and R,
 #  so it is useful to have an auto mode since R will vary through optimization process.
 p =(
@@ -47,23 +47,24 @@ ub = [
     5. # v
 ] # up
 
-function F(u, p)
-    packing_fraction, R, v = u
-    # wall_condition, nb_runs, N, M = p
-    lb = [0.1, 0.55, 1.]
-    ub = [0.3, 1., 10.]
-    for i in eachindex(u)
-        if u[i] < lb[i] || u[i] > ub[i]
-            return Inf
-        end
-    end
-    return mean_pf([Nt, packing_fraction, L, R, v]; p)
-    # return packing_fraction*R - v
-end
 
-function F_small(u)
-    return u.x^2 + u.y
-end
+# function F(u, p)
+#     packing_fraction, R, v = u
+#     # wall_condition, nb_runs, N, M = p
+#     lb = [0.1, 0.55, 1.]
+#     ub = [0.3, 1., 10.]
+#     for i in eachindex(u)
+#         if u[i] < lb[i] || u[i] > ub[i]
+#             return Inf
+#         end
+#     end
+#     return mean_pf([Nt, packing_fraction, L, R, v]; p)
+#     # return packing_fraction*R - v
+# end
+
+# function F_small(u)
+#     return u.x^2 + u.y
+# end
 
 
 # Optimization problem (OptimizationProblem instance)
