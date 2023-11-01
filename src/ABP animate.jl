@@ -92,8 +92,6 @@ function plot_trajectory_trace!(xyθ; parameters::NamedTuple, wall_condition::St
     plot_filepath = plotsdir(plot_filename)
 
     savefig(plot_filepath)
-    println("\n\n\n$wall_condition")
-
 end
 
 
