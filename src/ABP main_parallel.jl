@@ -22,6 +22,7 @@ struct ABPE2 <: ABPsEnsemble
 	θ::Vector{Float64}    # orientation (rad)
 end
 
+include("step.jl")
 
 #---------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # Initialize ABP ensemble (CURRENTLY ONLY 2D)
@@ -133,7 +134,7 @@ orientation(abpe::ABPE2) = abpe.θ
 # Functions to update particles for the next step
 function update(abpe::ABPE, matrices::Tuple{Matrix{Float64}, BitMatrix, BitMatrix}, δt::Float64; N::Integer, M::Integer) where {ABPE <: ABPsEnsemble}
     # STEP
-    pθ = ( position(abpe), orientation(abpe) ) .+ step(abpe,δt)
+    pθ = ( position(abpe), orientation(abpe) ) .+ straight_step(abpe,δt)
     # BOUNDARY CONDITION
     periodic_BC_array!(pθ[1], abpe.L, abpe.R)
     #circular_wall_condition!(pθ[1],L::Float64, R, step_mem::Array{Float64,2})
