@@ -26,6 +26,7 @@ parameters_spaces = Dict(
 for p in ProgressBar(dict_list(parameters_spaces)) 
     # we will average on 200 runs
     mean_pf_vec = Vector{Float64}([])
+    
     generated_folder = run((Nt=Nt, Np=Np, L=L, R=R, v=v); nb_runs=NB_RUNS, wall_condition=WALL_CONDITION)
     for filename in readdir(generated_folder[1])
         data_path = datadir("sims", generated_folder[1], filename)

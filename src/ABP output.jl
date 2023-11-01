@@ -26,8 +26,8 @@ function run(
     verbose::Bool=true
     )
 
-    if(wall_condition == "periodic")
-        simulation_output = multiparticleE(;parameters..., N=N, M=M, verbose=verbose)
+    if(wall_condition in ["open", "periodic"])
+        simulation_output = multiparticleE(;parameters..., wall_condition, N=N, M=M, verbose=verbose)
     elseif(wall_condition in ["squared", "elliptical"])
         simulation_output = multiparticleE_wall(;parameters..., wall_condition, N=N, M=M, verbose=verbose)
     else 

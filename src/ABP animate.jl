@@ -30,15 +30,15 @@ function animate!(xyθ; parameters::NamedTuple, wall_condition::String, animatio
         
         # frame for ellipse
         if(wall_condition == "elliptical")
-            display(plot!(parameters.L/2*cos.(-π:0.01:π), L/4*sin.(-π:0.01:π))) # ellipse
+            plot!(parameters.L/2*cos.(-π:0.01:π), L/4*sin.(-π:0.01:π)) # ellipse
         # frame for square
-        elseif(wall_condition ∈ ["periodic", "squared"])
-            display(plot!([parameters.L/2], seriestype="vline", color=:red))  #square
-            display(plot!([-parameters.L/2], seriestype="vline", color=:red))
-            display(plot!([parameters.L/2], seriestype="hline", color=:red))  #square
-            display(plot!([-parameters.L/2], seriestype="hline", color=:red))
+        elseif(wall_condition == "squared")
+            plot!([parameters.L/2], seriestype="vline", color=:red)  #square
+            plot!([-parameters.L/2], seriestype="vline", color=:red)
+            plot!([parameters.L/2], seriestype="hline", color=:red)  #square
+            plot!([-parameters.L/2], seriestype="hline", color=:red)
         end
-        
+
         # for the arrows
         quiver!(xyθ[1][i][:,1], xyθ[1][i][:,2], quiver=(4*cos.(xyθ[2][i]),4*sin.(xyθ[2][i])), color=:red)
     end
@@ -51,6 +51,9 @@ function animate!(xyθ; parameters::NamedTuple, wall_condition::String, animatio
     animation_filepath = plotsdir(animation_filename)
 
     gif(anim, animation_filepath)
+
+    plot_trajectory_trace!(xyθ; parameters=parameters, wall_condition=wall_condition, plot_filename=nothing, stride=300, verbose=verbose)
+
 end
 
 
@@ -64,13 +67,13 @@ function plot_trajectory_trace!(xyθ; parameters::NamedTuple, wall_condition::St
 
     title = "$(parameters.Np) particles"
     plot(title=title)
-    
+
     # frame for ellipse
     if(wall_condition == "elliptical")
         # title *= "ellipse a=L/2, b= L/4"
         plot!(parameters.L/2*cos.(-π:0.01:π), L/4*sin.(-π:0.01:π), title=title) # ellipse
     # frame for square
-    elseif(wall_condition ∈ ["periodic", "squared"])
+    elseif(wall_condition == "squared")
         plot!([parameters.L/2], seriestype="vline", color=:red)  #square
         plot!([-parameters.L/2], seriestype="vline", color=:red)
         plot!([parameters.L/2], seriestype="hline", color=:red)  #square

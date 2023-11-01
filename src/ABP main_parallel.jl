@@ -97,18 +97,18 @@ end;
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # Functions to simulate multiple spherical particles
 
-function multiparticleE(;Np::Integer, L::Float64, R::Float64, v::Float64, Nt::Int64=2, δt::Float64=1e-3, N::Integer, M::Integer, verbose::Bool)
+function multiparticleE(;Np::Integer, L::Float64, R::Float64, v::Float64, Nt::Int64=2, δt::Float64=1e-3, wall_condition::String, N::Integer, M::Integer, verbose::Bool)
     (Nt isa Int64) ? Nt : Nt=convert(Int64,Nt)
     
     ABPE = Vector{ABPE2}(undef,Nt+1) # Nt is number of time steps
     ABPE[1], matrices = initABPE_square( Np, L, R, v; N=N, M=M) # including initial hardsphere correction
     
-    simulate!(ABPE, matrices, Nt, δt; N=N, M=M, verbose=verbose)
+    simulate!(ABPE, matrices, Nt, δt, wall_condition; N=N, M=M, verbose=verbose)
 
     return position.(ABPE), orientation.(ABPE)
 end
 
-function simulate!(ABPE, matrices, Nt, δt; N, M, verbose)
+function simulate!(ABPE, matrices, Nt, δt, wall_condition; N, M, verbose)
     # PΘ = [ (position(abpe), orientation(abpe)) ]
     # pθ = PΘ[1]
 
@@ -120,7 +120,7 @@ function simulate!(ABPE, matrices, Nt, δt; N, M, verbose)
     end
 
     for nt in iter
-        ABPE[nt+1] = update(ABPE[nt],matrices,δt; N=N, M=M) #updating information at every step
+        ABPE[nt+1] = update(ABPE[nt],matrices,δt, wall_condition; N=N, M=M) #updating information at every step
         # println("Step $nt")
     end
     return nothing
@@ -132,12 +132,19 @@ orientation(abpe::ABPE2) = abpe.θ
 
 #---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # Functions to update particles for the next step
-function update(abpe::ABPE, matrices::Tuple{Matrix{Float64}, BitMatrix, BitMatrix}, δt::Float64; N::Integer, M::Integer) where {ABPE <: ABPsEnsemble}
+function update(abpe::ABPE, matrices::Tuple{Matrix{Float64}, BitMatrix, BitMatrix}, δt::Float64, wall_condition::String; N::Integer, M::Integer) where {ABPE <: ABPsEnsemble}
     # STEP
-    pθ = ( position(abpe), orientation(abpe) ) .+ straight_step(abpe,δt)
+    pθ = ( position(abpe), orientation(abpe) ) .+ step(abpe,δt)
+
     # BOUNDARY CONDITION
-    periodic_BC_array!(pθ[1], abpe.L, abpe.R)
+    if(wall_condition == "open") # no modification in "open" mode
+    elseif(wall_condition == "periodic")
+        periodic_BC_array!(pθ[1], abpe.L, abpe.R)
+    else
+        throw(ArgumentError("please provide a correct argument for wall condition"))
+    end
     #circular_wall_condition!(pθ[1],L::Float64, R, step_mem::Array{Float64,2})
+
     # HARDSPHERE CORRECTION
     hardsphere!(pθ[1], matrices[1], matrices[2], matrices[3], abpe.L, abpe.R; N=N, M=M)
     # @btime hardsphere!($p[:,1:2], $matrices[1], $matrices[2], $matrices[3], $params.R)

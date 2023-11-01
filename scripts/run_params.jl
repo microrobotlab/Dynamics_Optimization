@@ -10,10 +10,10 @@ include(srcdir("ABP output.jl"))
 # CALL RUNNER WITH ARGUMENTS 
 
 # simulation parameters
-Nt = 5000; Np = 5; L = 100.; R = 1.5; v = 10.
+Nt = 3000; Np = 1; L = 100.; R = 1.5; v = 10.
 
 # macro-parameters
-wall_condition = "periodic"; nb_runs = 1
+wall_condition = "open"; nb_runs = 1
 
 # CSV export parameters: `save_stride` is the stride for timesteps while saving simulator output 
 # /!\ SAVE WON'T BE TAKEN INTO ACCOUNT FOR nb_runs > 1
