@@ -6,6 +6,7 @@ using JSON3
 using DataFrames
 
 include("benchmarking_struct.jl")
+include(srcdir("ABP file.jl"))
 
 
 
@@ -20,7 +21,7 @@ simulator_variable = :Np
 benchmarking_variable = :times
 
 # FUNCTION THAT WILL BE APPLIED TO THE BENCHMARKING DATA
-F(X) = minimum(X) / 1.0e9
+F(X) = minimum(X) / 10^9 # minimum among execution times in seconds (divide by 1.0e9, the output times are in nanoseconds)
 
 # WHERE THE DATA IS LOCATED 
 data_filename_list = readdir(datadir("processed", "benchmarking_outputs"))
@@ -74,4 +75,4 @@ plot!(X[1], Y[1], label=labels[1], color=:black, linestyle=:dash, lw=2)
 # with parallel
 plot!(X[2:end], Y[2:end], label=permutedims(labels[2:end]), line_z=(1:length(X[2:end]))', color=cgrad(:thermal), colorbar=false, lw=1)
 
-savefig("test.svg")
+savefig(projectdir("plots", instance_marker() * "_" * "benchmark.svg"))

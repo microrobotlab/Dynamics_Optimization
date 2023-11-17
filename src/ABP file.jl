@@ -100,11 +100,13 @@ end
 
 Utility function to help generating discriminant filenames based on time and experiment parameters.
 """
-function instance_marker(;parameters=nothing, wall_condition=nothing)
+function instance_marker(;parameters=nothing, wall_condition=nothing, collision_correction=nothing)
     # time signature to differentiate at least
     name = Dates.format(now(),"YYYY-mm-dd_HH:MM:SS:sss") 
     # add wall_condition if provided
     if(wall_condition !== nothing) name *= "_" * wall_condition end 
+    # add collistion correction indication if provided
+    if(collision_correction !== nothing) name *= "_" * "collision-correction=$collision_correction" end 
     # add experiment parameters if provided
     if(parameters !== nothing) name = savename(name, parameters; digits=3) end  
     return name

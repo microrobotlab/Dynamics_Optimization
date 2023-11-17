@@ -13,7 +13,7 @@ include(projectdir("src", "ABP VOP.jl"))
 
 # /!\ For optimization, the number of particle Np is given by packing_fraction 
 # (see utils.jl file) through the function `packing_fraction_to_Np()`
-function mean_pf(parameters; wall_condition, nb_runs, N, M)
+function mean_pf(parameters; wall_condition, collision_correction, nb_runs, N, M)
     # packing fraction to Np to fit simulator parameters
     run_parameters = (
         Nt=parameters.Nt, 
@@ -24,7 +24,8 @@ function mean_pf(parameters; wall_condition, nb_runs, N, M)
     )
     # call simulator and get corresponding generated folder path
     simulation_folder_path = run_multiple(
-        run_parameters; wall_condition=wall_condition, 
+        run_parameters; 
+        wall_condition=wall_condition, collision_correction=collision_correction,
         nb_runs=nb_runs, 
         save_stride=1,
         animate=false,

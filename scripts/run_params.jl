@@ -5,15 +5,16 @@ using DrWatson
 println("Currently in $(projectdir()) environment !")
 
 include(srcdir("ABP output.jl"))
+# include("utils.jl")
 
 #---------------------------------------------------------------------------------------------------------------------
 # CALL RUNNER WITH ARGUMENTS 
 
 # simulation parameters
-Nt = 3000; Np = 1; L = 100.; R = 1.5; v = 10.
+Nt = 1000; Np = 850; L = 100.; R = 1.5; v = 10.
 
 # macro-parameters
-wall_condition = "open"; nb_runs = 1
+wall_condition = "periodic"; collision_correction = true; nb_runs = 1
 
 # CSV export parameters: `save_stride` is the stride for timesteps while saving simulator output 
 # /!\ SAVE WON'T BE TAKEN INTO ACCOUNT FOR nb_runs > 1
@@ -21,10 +22,10 @@ save = false; save_stride = 1
 
 # animation parameters: `animation_stride` stride for the animation, by default `animation_filename` will have the same marker as 
 # simulation file output (see file ), no choice in the case of file export (will be based on the data filename) 
-animate = true; animation_filename = nothing; animation_stride = 10
+animate = false; animation_filename = nothing; animation_stride = 10
 
 # parallelization parameters: (N, M) number of cells (rows, columns)
-N = 16; M = 16;
+N = 5; M = 5;
 
 # simulation progress bar display
 verbose = true
@@ -32,13 +33,22 @@ verbose = true
 
 if(nb_runs==1 && !save)
     # in this case return the simulator output directly
-    run((Nt=Nt,Np=Np,L=L,R=R,v=v); wall_condition=wall_condition, animate=animate, animation_stride=animation_stride, N=N, M=M, verbose=verbose)
+    run(
+        (Nt=Nt,Np=Np,L=L,R=R,v=v); 
+        wall_condition=wall_condition, collision_correction=collision_correction,
+        animate=animate, animation_stride=animation_stride, 
+        N=N, M=M, 
+        verbose=verbose
+    );
 else
     # in this case return the folder path containing the saved runs
-    run_multiple((Nt=Nt,Np=Np,L=L,R=R,v=v); wall_condition=wall_condition, 
+    run_multiple(
+        (Nt=Nt,Np=Np,L=L,R=R,v=v); 
+        wall_condition=wall_condition, collision_correction=collision_correction,  
         nb_runs=nb_runs, 
         save_stride=save_stride, 
         animate=animate, animation_stride=animation_stride,
         N=N, M=M,
-        verbose=verbose);
+        verbose=verbose
+    );
 end

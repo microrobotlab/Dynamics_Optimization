@@ -17,9 +17,10 @@ include("utils_optimization.jl")
 #  so it is useful to have an auto mode since R will vary through optimization process.
 p =(
     wall_condition = "periodic",
+    collision_correction = true,
     nb_runs = 10,
-    N = :auto, 
-    M = :auto    
+    N = 4, 
+    M = 4    
 )
 
 Nt = 1000
@@ -30,7 +31,7 @@ objective_function = mean_pf
 
 # Initial conditions
 u0 = [
-    0.2, # packing_fraction
+    0.1, # packing_fraction
     1.5, # R
     5. # v
 ]
@@ -73,8 +74,8 @@ ub = [
 # (see https://docs.sciml.ai/Optimization/stable/API/optimization_function/)
 function optf(u,p)
     packing_fraction, R, v = u
-    wall_condition, nb_runs, N, M = p
-    return objective_function((Nt=Nt, packing_fraction=packing_fraction, L=L, R=R, v=v); wall_condition=wall_condition, nb_runs=nb_runs, N=N, M=M)
+    wall_condition, collision_correction, nb_runs, N, M = p
+    return objective_function((Nt=Nt, packing_fraction=packing_fraction, L=L, R=R, v=v); wall_condition=wall_condition, collision_correction=collision_correction, nb_runs=nb_runs, N=N, M=M)
 end
 prob = OptimizationProblem(optf, u0, p) #lb=lb, ub=ub)
 # Specific parameters for the optimization methods in the different packages are passed in `solve()` as keywords arguments

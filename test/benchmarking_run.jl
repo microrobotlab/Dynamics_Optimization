@@ -19,6 +19,7 @@ L = 100.
 R = 1.5
 v = 10.
 
+# /!\ use only "periodic" for the moment 
 wall_condition = "periodic"
 
 

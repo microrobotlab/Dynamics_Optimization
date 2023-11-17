@@ -10,7 +10,7 @@ using ProgressBars
 Animate simulator output from direct output. Adjustable animation `stride`.
 By default, animation filename based on given simulation parameters.
 """
-function animate!(xyθ; parameters::NamedTuple, wall_condition::String, animation_filename=nothing, stride::Integer=1, verbose::Bool)
+function animate!(xyθ; parameters::NamedTuple, wall_condition::String, collision_correction::Bool, animation_filename=nothing, stride::Integer=1, verbose::Bool)
     iter = 1:stride:parameters.Nt
     # progress meter if verbose 
     if verbose
@@ -46,14 +46,11 @@ function animate!(xyθ; parameters::NamedTuple, wall_condition::String, animatio
 
     # define animation filepath
     if(animation_filename === nothing) # if no name given for animation output
-        animation_filename = instance_marker(parameters=parameters, wall_condition=wall_condition) * "_animation.gif"
+        animation_filename = instance_marker(parameters=parameters, wall_condition=wall_condition, collision_correction=collision_correction) * "_animation.gif"
     end
     animation_filepath = plotsdir(animation_filename)
 
     gif(anim, animation_filepath)
-
-    plot_trajectory_trace!(xyθ; parameters=parameters, wall_condition=wall_condition, plot_filename=nothing, stride=300, verbose=verbose)
-
 end
 
 
