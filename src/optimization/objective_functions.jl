@@ -1,6 +1,6 @@
 # The objective functions defined for the optimizer
-# MUST HAVE THE FORM F(u, p) WITH u the state variables and p other parameters (here those of the simulator)
-# SEE https://docs.sciml.ai/Optimization/stable/API/optimization_function/
+# Must respect SciML package format for optimization functions F(u, p) with u the state variables and p other parameters  
+# see https://docs.sciml.ai/Optimization/stable/API/optimization_function/
 
 using DrWatson
 @quickactivate "active-brownian-particles"

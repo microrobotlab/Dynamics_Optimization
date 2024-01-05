@@ -1,5 +1,4 @@
 using DrWatson
-@quickactivate "active-brownian-particles"
 using Printf
 using Plots
 using Distributions, StatsPlots

@@ -1,5 +1,4 @@
 using DrWatson
-@quickactivate "active-brownian-particles"
 using Plots, Indicators, Temporal, Statistics
 
 include(projectdir("src", "ABP VOP.jl"))

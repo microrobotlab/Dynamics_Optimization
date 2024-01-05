@@ -1,6 +1,4 @@
 using DrWatson
-@quickactivate "active-brownian-particles"
-println("Currently in $(projectdir()) environment !")
 using Optim
 using Plots
 
