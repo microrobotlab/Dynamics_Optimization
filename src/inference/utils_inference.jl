@@ -1,4 +1,10 @@
-# To match simulator / inference packages output formats
+# UTILITY FUNCTIONS FOR AUTOMATIC INFERENCE OF PARTICLE DYNAMICS 
+
+"""
+    tup2matrix_states(sim_output::Tuple)
+
+Format simulator output : from tuple ( [ [x₀ y₀], [x₁ y₁], ..., [xₙ yₙ] ], [ [θ₀], [θ₁], [θₙ] ] ) matrix with time in column and state x y θ in rows (inverse of `matrix2tup_states` function)
+"""
 function tup2matrix_states(sim_output::Tuple)
     # concatenate x,y with θ for each timestep
     concat_matrices =  hcat.(sim_output[1], sim_output[2])
@@ -9,6 +15,12 @@ function tup2matrix_states(sim_output::Tuple)
     return hcat(flat_states_list...)
 end
 
+
+"""
+    matrix2tup_states(matrix_output, nb_states=3)
+
+Format simulator output : from matrix with time in column and state x y θ in rows to tuple ( [ [x₀ y₀], [x₁ y₁], ..., [xₙ yₙ] ], [ [θ₀], [θ₁], [θₙ] ] ) (inverse of `tup2matrix_states` function)
+"""
 function matrix2tup_states(matrix_output, nb_states=3) # by default we have x,y,θ for the states
     # same steps as in tup2matrix_states in reverse order
     flat_states_list = eachcol(matrix_output)

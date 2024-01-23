@@ -1,3 +1,7 @@
+# TESTS FOR `indices_per_cell` FUNCTION FOR PARALLEL VERSION OF COLLISIONS CORRECTION
+# SEE `indices_per_cell` IN "src/ABP main_parallel.jl"
+
+
 function indices_per_cell1(xy, N, M, H, L)
     part = @. ceil(Int, (xy / [L H]) * [N M])
     indices_partition = fill(Array{Int}([]), (N,M))
@@ -71,7 +75,7 @@ function indices_per_cell(xy, R, tol, N, M)
     for i=1:size(xy,1)
         for n=1:N
             for m=1:M
-                # we overlap the regions with border 2R*(1-tol), otherwise collisions at the border of the cells will never be detected 
+                # we overlap cells with an extension of size 2R*(1-tol), otherwise collisions at the border of the cells will never be detected 
                 # if((xy[i,1] > x_min + (m-1)*cell_width) && (xy[i,1] < x_min + m*cell_width) && (xy[i,2] > y_min + (n-1)*cell_height) && (xy[i,2] < y_min + n*cell_height))
                 if((xy[i,1] > x_min + (m-1)*cell_width - 2R*(1-tol)) && (xy[i,1] < x_min + m*cell_width + 2R*(1-tol)) && (xy[i,2] > y_min + (n-1)*cell_height - 2R*(1-tol)) && (xy[i,2] < y_min + n*cell_height + 2R*(1-tol)))
                     push!(indices_partition[(n-1)*M + m], i)

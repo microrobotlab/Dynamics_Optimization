@@ -1,3 +1,7 @@
+# RESEARCH FOR INTEGRATION OF PARALLEL COMPUTING TO THE SIMULATOR
+# SEE hardsphere_correction_tests.jl
+
+
 using CalculusWithJulia, ForwardDiff
 using Random
 

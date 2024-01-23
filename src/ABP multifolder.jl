@@ -1,5 +1,11 @@
 using FilePaths
 
+
+"""
+    multipledir(path, ICS)
+
+Create folders (`ICS` number of folder created) at `path` to store simulator outputs.
+"""
 function multipledir(path, ICS)
     rundirs = []
     for i=1:ICS

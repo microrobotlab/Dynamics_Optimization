@@ -1,4 +1,4 @@
-using  Plots, LaTeXStrings, Statistics, CSV, DataFrames,CategoricalArrays
+using  Plots, LaTeXStrings, Statistics, CSV, DataFrames, CategoricalArrays
  
 """
     polarization_factor(filename::String; averaged::Bool=false)

@@ -1,20 +1,26 @@
-# The objective functions defined for the optimizer
-# Must respect SciML package format for optimization functions F(u, p) with u the state variables and p other parameters  
-# see https://docs.sciml.ai/Optimization/stable/API/optimization_function/
+# The objective functions defined for the optimizer (see `optimizer.jl`)
 
 using DrWatson
-@quickactivate "active-brownian-particles"
 using Optim
 using Plots
 
+# `projectdir` from DrWatson provides path to current project to which we add elements provided in arguments
 include(projectdir("src", "ABP output.jl"))
 include(projectdir("src", "ABP VOP.jl"))
 
 
-# /!\ For optimization, the number of particle Np is given by packing_fraction 
-# (see utils.jl file) through the function `packing_fraction_to_Np()`
+# /!\ For optimization, the number of particles Np is indirectly provided by
+# the packing fraction (see utils.jl file) through the function `packing_fraction_to_Np()`
+
+"""
+    mean_pf(parameters; wall_condition, collision_correction, nb_runs, N, M)
+
+Compute polarization factor averaged over time and over `nb_runs` simulations using `polarization_factor` function.
+
+`N` and `M` still allow for selecting the number of vertical and horizontal divisions of the space for parallel computation (see 'ABP main_parallel.jl' or 'ABP output.jl')
+""" 
 function mean_pf(parameters; wall_condition, collision_correction, nb_runs, N, M)
-    # packing fraction to Np to fit simulator parameters
+    # Packing fraction to Np to fit simulator parameters
     run_parameters = (
         Nt=parameters.Nt, 
         Np=packing_fraction_to_Np(parameters.packing_fraction, parameters.R, parameters.L), 
@@ -22,7 +28,7 @@ function mean_pf(parameters; wall_condition, collision_correction, nb_runs, N, M
         R=parameters.R, 
         v=parameters.v
     )
-    # call simulator and get corresponding generated folder path
+    # Call simulator and get corresponding generated folder path
     simulation_folder_path = run_multiple(
         run_parameters; 
         wall_condition=wall_condition, collision_correction=collision_correction,
@@ -32,16 +38,18 @@ function mean_pf(parameters; wall_condition, collision_correction, nb_runs, N, M
         N=N, M=M,
         verbose=false
     )
-    # compute mean polarization factor from outputed files
+    # Compute mean polarization factor from outputed files
     mean_pf_vec = Array{Float64}([])
     for filename in readdir(simulation_folder_path)
         data_path = joinpath(simulation_folder_path, filename)
-        # averaged over time by polarization_factor
+        # Compute time averaged polarization factor for one simulation 
         mean_pf = polarization_factor(data_path; averaged=true)
         push!(mean_pf_vec, mean_pf)
     end
-    # remove folder (because a lot will be generated over optimization)
+    # Remove folder (because a lot will be generated over optimization)
     rm(simulation_folder_path; recursive=true)
-    # return /!\ MINUS THE AVERAGE (here we minimize so need to invert)
+    # Mean over all simulations
+    # /!\ return MINUS the result because we will minimize 
+    # and we want the polarization factor to increase
     return - mean(mean_pf_vec)
 end

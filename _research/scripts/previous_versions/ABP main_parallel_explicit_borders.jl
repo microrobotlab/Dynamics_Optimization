@@ -238,6 +238,7 @@ function hardsphere!(
     odd_even_cells_indices = []
     odd_odd_cells_indices = []
     for i in eachindex(indices_partition)
+        # to switch from linear to row / colum indexing and then check parity of vertical / horizontal index
         if (iseven(((i-1) ÷ M) + 1) && iseven(((i-1) % M) + 1)); push!(even_even_cells_indices,i);
         elseif (iseven(((i-1) ÷ M) + 1) && isodd(((i-1) % M) + 1)); push!(even_odd_cells_indices,i);
         elseif (isodd(((i-1) ÷ M) + 1) && iseven(((i-1) % M) + 1)); push!(odd_even_cells_indices,i);
@@ -273,7 +274,8 @@ function hardsphere!(
         end
     end
         
-    # GLOBAL SUPERPOSITIONS EVALUATION
+    # QUALITY TEST TO SEE THE ACTUAL AMOUNT OF SUPERPOSITIONS AFTER CORRECTION
+    # (COMPUTED ON THE OVERALL SYSTEM, NOT PER CELL) 
     # dists_total = pairwise(Euclidean(),xy,xy,dims=1)
     # superpose_total = (dists_total .< 2R*(1-tol)) .* uptriang
     # superpositions_total = sum(superpose_total)

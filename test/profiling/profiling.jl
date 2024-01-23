@@ -1,13 +1,17 @@
-using DrWatson
-@quickactivate "active-brownian-particles"
-println("Currently in $(projectdir()) environment !")
-using Test, ProfileView, BenchmarkTools
+# THIS CODE GENERATES FLAMEGRAPHS FOR THE SIMULATOR
+# (see https://github.com/timholy/ProfileView.jl)
 
+using DrWatson
+using ProfileView, BenchmarkTools
+
+# `srcdir` from DrWatson provides path to src/ to which we add elements provided in arguments
 include(srcdir("ABP output.jl"))
+# Same for `projectdir` which provides path to current project 
+include(projectdir("test", "ABP main_original.jl"))
 
 
 #---------------------------------------------------------------------------------------------------------------------
-# TESTS RUNNER WITH ARGUMENTS 
+# SIMULATOR PARAMETERS FOR PROFILING 
 
 # simulation parameters
 Nt = 10000; Np = 20; L = 100.; R = 1.5; v = 10.
@@ -26,5 +30,10 @@ animate = false; animation_filename = nothing; animation_stride = 10
 N = 16; M = 16; x_min = -L/2 - ϵ; x_max = L/2 + ϵ; y_min = -L/2 - ϵ; y_max = L/2 + ϵ
 
 
-# FLAMGRAPH
-ProfileView.@profview run((Nt=Nt,Np=Np,L=L,R=R,v=v); wall_condition=wall_condition, collision_correction=collision_correction, animate=animate, animation_stride=animation_stride, N=N, M=M);
+# ----- FLAMGRAPH GENERATION
+# For parallel version of the simulator
+# ProfileView.@profview run((Nt=Nt,Np=Np,L=L,R=R,v=v); wall_condition=wall_condition, collision_correction=collision_correction, animate=animate, animation_stride=animation_stride, N=N, M=M);
+
+# For original version of the simulator
+# /!\ BEWARE OF NAME CONFLICTS, `multiparticleE_wall` IS USED IN PARALLEL AND NON-PARALLEL VERSIONS OF THE SIMULATOR 
+ProfileView.@profview multiparticleE_wall(Np, L, R, v, Nt);

@@ -1,3 +1,5 @@
+# OLD VERSION OF THE SIMULATOR MAIN FOR PERFORMANCE COMPARISON WITH PARALLEL VERSION
+
 using CalculusWithJulia, ForwardDiff, Distances
 
 # Define an "ABPsEnsemble" Type
@@ -16,8 +18,8 @@ struct ABPE2 <: ABPsEnsemble
 	θ::Vector{Float64}    # orientation (rad)
 end
 
-#------------------------------------------------------------For square ---------------------------------------------------------------------------------------------------------
-
+#---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## FOR SQUARE
 ## Initialize ABP ensemble (CURRENTLY ONLY 2D) 
 # function initABPE(Np::Int64, L::Float64, R::Float64, v::Float64; T::Float64=300.0, η::Float64=1e-3)
 #     # translational diffusion coefficient [m^2/s] & rotational diffusion coefficient [rad^2/s] - R [m]
@@ -37,7 +39,8 @@ end
 #     return abpe, (dists, superpose, uptriang)
 # end
 
-#------------------------------------------------------------For ellipse ---------------------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## FOR ELLIPSE
 ## Initialize ABP ensemble (CURRENTLY ONLY 2D) 
 function initABPE(Np::Int64, L::Float64, R::Float64, v::Float64; T::Float64=300.0, η::Float64=1e-3)
     # translational diffusion coefficient [m^2/s] & rotational diffusion coefficient [rad^2/s] - R [m]
@@ -68,7 +71,7 @@ function initABPE(Np::Int64, L::Float64, R::Float64, v::Float64; T::Float64=300.
 end
 
 #---------------------------------------------------------------------------------------------------------------------------------------------------------------------
-##Calculate diffusion coefficient
+# Calculate diffusion coefficient
 function diffusion_coeff(R::Float64, T::Float64=300.0, η::Float64=1e-3)
     # Boltzmann constant [J/K]
     kB = 1.38e-23
@@ -113,8 +116,11 @@ orientation(abpe::ABPE2) = abpe.θ
 function update(abpe::ABPE, matrices::Tuple{Matrix{Float64}, BitMatrix, BitMatrix}, δt::Float64) where {ABPE <: ABPsEnsemble}
     pθ = ( position(abpe), orientation(abpe) ) .+ step(abpe,δt)
 
+    # Boundary condition
     periodic_BC_array!(pθ[1],abpe.L, abpe.R)
     #circular_wall_condition!(pθ[1],L::Float64, R, step_mem::Array{Float64,2})
+    
+    # Collision correction
     hardsphere!(pθ[1], matrices[1], matrices[2], matrices[3], abpe.R)
     # @btime hardsphere!($p[:,1:2], $matrices[1], $matrices[2], $matrices[3], $params.R)
     new_abpe = ABPE2( abpe.Np, abpe.L, abpe.R, abpe.v, abpe.DT, abpe.DR, pθ[1][:,1], pθ[1][:,2], pθ[2] )
@@ -125,6 +131,7 @@ end
 
 function step(abpe::ABPE, δt::Float64) where {ABPE <: ABPsEnsemble}
     
+    # One step using Active Brownian Particles model
     if size(position(abpe),2) == 2
         δp = sqrt.(2*δt*abpe.DT)*randn(abpe.Np,2) .+ abpe.v*δt*[cos.(abpe.θ) sin.(abpe.θ)] #.+ δt*δt*  attractive_interactions!(position(abpe),2.0)
         δθ = sqrt(2*abpe.DR*δt)*randn(abpe.Np)
@@ -138,11 +145,11 @@ function step(abpe::ABPE, δt::Float64) where {ABPE <: ABPsEnsemble}
 end
 
 #---------------------------------------------------------------------------------------------------------------------------------------------------------------------
-# Functions for the hard sphere corrections
+# Functions for the hard sphere corrections (particle superposition corrections)
 function hardsphere_correction!(xy::Array{Float64,2}, dists::Array{Float64,2}, superpose::BitArray{2}, R::Float64; tol::Float64=1e-3)
-    Np = size(superpose,1) ##gives me the number of superpose lines 
+    Np = size(superpose,1) # gives me the number of superpose lines, that is the number of particles
     for np1 in 1:Np
-        if any(superpose[np1,:]) #if at least one value of the np1 row is true 
+        if any(superpose[np1,:]) # if at least one value of the np1 row is true 
             np2 = findfirst(superpose[np1,:])
             Δp = (xy[np1,:] - xy[np2,:]) .* ( ( (1+tol)*2R / dists[np1,np2] - 1 ) / 2 )
             xy[np1,:] += Δp
@@ -232,7 +239,6 @@ end
 
 function update_wall(abpe::ABPE, matrices::Tuple{Matrix{Float64}, BitMatrix, BitMatrix}, δt::Float64) where {ABPE <: ABPsEnsemble}
     memory_step = step(abpe,δt)
-  
     pθ = ( position(abpe), orientation(abpe) ) .+ memory_step
 
     wall_condition!(pθ[1],abpe.L, abpe.R, memory_step[1])
@@ -246,6 +252,7 @@ function update_wall(abpe::ABPE, matrices::Tuple{Matrix{Float64}, BitMatrix, Bit
     return new_abpe
 end
 
+# 
 function wall_condition!(xy::Array{Float64,2},L::Float64, R, step_mem::Array{Float64,2}) # this condition is for square reflective boundary
   
 	# Boundary conditions: horizontal edge

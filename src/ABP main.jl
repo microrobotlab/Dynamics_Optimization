@@ -73,7 +73,7 @@ end
 
 
 #---------------------------------------------------------------------------------------------------------------------------------------------------------------------
-#Calculate diffusion coefficient
+# Calculate diffusion coefficient
 
 function diffusion_coeff(R::Float64, T::Float64=300.0, η::Float64=1e-3)
     # Boltzmann constant [J/K]
@@ -123,7 +123,7 @@ function update(abpe::ABPE, matrices::Tuple{Matrix{Float64}, BitMatrix, BitMatri
 
     # Boundary correction
     periodic_BC_array!(pθ[1],abpe.L, abpe.R)
-    #circular_wall_condition!(pθ[1],L::Float64, R, step_mem::Array{Float64,2})
+    # circular_wall_condition!(pθ[1],L::Float64, R, step_mem::Array{Float64,2})
 
     # Particle collisions correction
     hardsphere!(pθ[1], matrices[1], matrices[2], matrices[3], abpe.R)
@@ -135,6 +135,8 @@ end
 # Defines particle dynamics (independently from interactions), here Active Brownian Particles model
 function step(abpe::ABPE, δt::Float64) where {ABPE <: ABPsEnsemble}
     if size(position(abpe),2) == 2
+        # one step using Active Brownian Particles model 
+        # (see https://en.wikipedia.org/wiki/Active_Brownian_particle)
         δp = sqrt.(2*δt*abpe.DT)*randn(abpe.Np,2) .+ abpe.v*δt*[cos.(abpe.θ) sin.(abpe.θ)]
         δθ = sqrt(2*abpe.DR*δt)*randn(abpe.Np)
     else
@@ -194,6 +196,7 @@ end
 # Initialize distance and superposition matrices and run `hardsphere!`, called in `initABPE`
 function hardsphere(xy::Array{Float64,2}, R::Float64; tol::Float64=1e-3) 
     Np = size(xy,1)
+    # pairwise 
     dists = zeros(Np,Np)
     superpose = falses(Np,Np)
     uptriang = falses(Np,Np)

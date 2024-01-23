@@ -261,6 +261,7 @@ function hardsphere!(
     odd_even_cells_indices = [] 
     odd_odd_cells_indices = []
     for i in eachindex(indices_partition)
+        # to switch from linear to row / colum indexing and then check parity of vertical / horizontal index
         if (iseven(((i-1) ÷ M) + 1) && iseven(((i-1) % M) + 1)) 
             push!(even_even_cells_indices,i)
         elseif (iseven(((i-1) ÷ M) + 1) && isodd(((i-1) % M) + 1)) 
@@ -271,22 +272,11 @@ function hardsphere!(
         end
     end
 
+    # # Particles indices in the different partity groups 
     # ee = collect(Iterators.flatten(indices_partition[even_even_cells_indices]))
     # eo = collect(Iterators.flatten(indices_partition[even_odd_cells_indices]))
     # oe = collect(Iterators.flatten(indices_partition[odd_even_cells_indices]))
     # oo = collect(Iterators.flatten(indices_partition[odd_odd_cells_indices]))
-    # if(maximum([count(x->x==i, ee) for i in unique(ee)]) > 1) 
-    #     throw("Intersections ee") 
-
-    # elseif(maximum([count(x->x==i, eo) for i in unique(eo)]) > 1) 
-    #     throw("Intersections eo") 
-    
-    # elseif(maximum([count(x->x==i, oe) for i in unique(oe)]) > 1) 
-    #     throw("Intersections oe") 
-    
-    # elseif(maximum([count(x->x==i, oo) for i in unique(oo)]) > 1) 
-    #     throw("Intersections oo") 
-    # end
 
     # println(even_even_cells_indices)
     # println(even_odd_cells_indices)
@@ -294,14 +284,16 @@ function hardsphere!(
     # println(odd_odd_cells_indices)
     # println(indices_partition)
 
-    # ee = collect(Iterators.flatten(indices_partition[even_even_cells_indices])); println("ee : $ee")
-    # eo = collect(Iterators.flatten(indices_partition[even_odd_cells_indices])); println("eo : $eo")
-    # oe = collect(Iterators.flatten(indices_partition[odd_even_cells_indices])); println("oe : $oe")
-    # oo = collect(Iterators.flatten(indices_partition[odd_odd_cells_indices])); println("oo : $oo")
-    # println("intersection : $(intersect(ee, oe, oe, oo))\n")
+    # # verify that there are no particles in to regions with different parities at the same time 
+    # println("intersection ee eo : $(intersect(ee, eo))\n")
+    # println("intersection ee oe : $(intersect(ee, oe))\n")
+    # println("intersection ee oo : $(intersect(ee, oo))\n")
+    # println("intersection eo oe : $(intersect(eo, oe))\n")
+    # println("intersection eo oo : $(intersect(eo, oo))\n")
+    # println("intersection oe oo : $(intersect(oe, oo))\n")
     
-    # scatter(xy[:,1], xy[:,2], aspect_ratio=:equal, lims=(-100/2, 100/2), markersize=350*R/100., marker =:circle,series_annotations = text.(1:length(xy[:,1]), :bottom), legend=false, title = nothing, show=true)
-    # scatter(xy[:,1], xy[:,2], aspect_ratio=:equal, lims=(-100/2, 100/2), markersize=350*R/100., marker =:circle,series_annotations = text.(1:length(xy[:,1]), :bottom), legend=false, title = nothing, show=true)
+    # to visualize cells division
+    # scatter(xy[:,1], xy[:,2], aspect_ratio=:equal, lims=(-100/2, 100/2), markersize=350*R/100., marker =:circle, series_annotations = text.(1:length(xy[:,1]), :bottom), legend=false, title = nothing, show=true)
     # scatter(xy[:,1], xy[:,2], aspect_ratio=:equal, lims=(-100/2, 100/2), markersize=350*R/100., legend=false, title = nothing, show=true)
     # hline!(ly, color=:red)
     # hline!(ly .+ 2R*(1-tol), color=:orange)

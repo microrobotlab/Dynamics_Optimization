@@ -1,7 +1,7 @@
 using DrWatson
-@quickactivate "active-brownian-particles"
 using Plots,Distances,NaNStatistics,CSV, DataFrames
 
+# `srcdir` from DrWatson provides path to src/ to which we add elements provided in arguments
 include(srcdir("ABP main_parallel.jl"))
 include(srcdir("ABP file.jl"))
 include(srcdir("ABP analysis.jl"))
@@ -23,7 +23,7 @@ Simulator envelope with parameters given as NamedTuple.
 `wall_condition` can be 'open', 'periodic', 'squared', or 'elliptical'. 
 `collision_correction` to unable / disable correction of the collistions in simulation. 
 `N` and `M` for vertical (resp. horizontal) number of divisions of the space for parallel computation of the simulation.
-`animate` (false by default) for animation generation based on output. Adjustable animation filename (based on experiment parameters by default) and animation stride (timestep in animation).
+`animate` (false by default) for animation generation based on output. Adjustable animation filename (based on experiment parameters by default) and animation stride (display one out of n steps in animation).
 `verbose` to see simulation and animation progress.
 Return tabular data corresponding to the simulation.
 """
@@ -64,7 +64,7 @@ end
     verbose::Bool=true
     )
 
-To use `run()` function in batch, with saved output in CSV file in 'data/sims/'. Number of runs and stride of the output file (for timesteps) tunable.
+To use `run()` function in batch, with saved output in CSV file in 'data/sims/'. Number of runs and stride of the output file (save one out of n state snapshots) tunable.
 Return the corresponding folderpath.
 """
 function run_multiple(
@@ -77,16 +77,17 @@ function run_multiple(
     verbose::Bool=true
     )
     
-    # Used for the name of the simulator output to make it recognizable and unique
+    # Used for the name of simulator output to make it recognizable and unique
     experiment_marker = instance_marker(parameters=parameters, wall_condition=wall_condition, collision_correction=collision_correction)
     # automatic output file name generation depending on parameters 
+    # `datadir` from DrWatson provides path to data directory to which we can add "sims/" and experiment_marker
     simulation_folder_path = datadir("sims", experiment_marker)
     mkdir(simulation_folder_path)
     # for each run
     for i_run in 1:nb_runs
         filename = experiment_marker * "_" * "run_$i_run"
         file_path = joinpath(simulation_folder_path, filename)
-        # the animation filename will be the same as the corresponding CSV file
+        # the animation filename will be based corresponding CSV filename
         simulation_output = run(
             parameters; 
             wall_condition=wall_condition, collision_correction=collision_correction,
@@ -126,6 +127,7 @@ function run_from_file(
     )
 
     # extract parameters instances from given file
+    # `datadir` from DrWatson provides path to data directory to which we can add "parameters/" and param_file_name
     parameter_instances = CSV.read(datadir("parameters", param_file_name), DataFrame)
     # to keep track of created folders
     folder_paths_list = Array{String}([])

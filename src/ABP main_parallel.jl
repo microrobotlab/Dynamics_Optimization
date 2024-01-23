@@ -32,7 +32,7 @@ include("step.jl")
 # For ellipse
 function initABPE_ellipse(Np::Int64, L::Float64, R::Float64, v::Float64; T::Float64=300.0, η::Float64=1e-3, collision_correction::Bool, N::Integer, M::Integer)
     # Translational diffusion coefficient [m^2/s] and rotational diffusion coefficient [rad^2/s] - R [m]
-    # Initial condition will be choosen as per the geometry under study
+    # Initial condition will be chosen as per the geometry under study
     DT, DR = diffusion_coeff(1e-6R)
 
     # ONLY 2D!
@@ -150,7 +150,7 @@ function update(abpe::ABPE, matrices, δt::Float64, wall_condition::String; coll
     # Step
     pθ = ( position(abpe), orientation(abpe) ) .+ step(abpe,δt)
 
-    # Boundary condition
+    # Boundary conditions
     if(wall_condition == "open") # no modification in "open" mode (no walls)
     elseif(wall_condition == "periodic")
         periodic_BC_array!(pθ[1], abpe.L, abpe.R)
@@ -179,7 +179,7 @@ function borders(L)
     # L is the size of the area and it is centered around 0.
     # (FIXED in the current version but could depend upon wall condition) 
     
-    # Add an small margin for safety
+    # Add a small margin for safety
     ϵ = 0.5
     x_min = -L/2 - ϵ
     x_max = L/2 + ϵ
@@ -217,7 +217,7 @@ function update_superpositions(xy::Array{Float64,2}, indices, dists::Matrix{Floa
     superpose[indices, indices] .= (dists[indices, indices] .< 2R*(1-tol)) .* uptriang[indices, indices]
 end
 
-# Hardsphere correction for one cell; `indices` provides the indices of the particles in the cell we want to apply collisions correction 
+# Hardsphere correction for one cell; `indices` provides the indices of the particles in the cell in which we want to apply collisions correction 
 function local_hardsphere_correction!(xy::Array{Float64,2}, indices, dists::Matrix{Float64}, superpose::BitMatrix, R::Float64; tol::Float64)
     # Number of superpositions in considered cell
     superpositions = sum(superpose[indices, indices])
@@ -227,7 +227,7 @@ function local_hardsphere_correction!(xy::Array{Float64,2}, indices, dists::Matr
             # If at least one value of the np1 row is true, i.e. there is a superposition with the corresponding particle
             if any(superpose[np1,indices]) 
                 # Take the first pair of superposed particles (np1, np2)
-                # /!\ `findfirst(superpose_list[cell_index][np1,indices])` is giving the np2 position in the matrix
+                # /!\ `findfirst(superpose_list[cell_index][np1,indices])` gives the np2 position in the matrix
                 # restricted to [indices, indices] so we have to take the element at this relative position in indices, hence:
                 np2 = indices[findfirst(superpose[np1,indices])]
 
@@ -255,7 +255,7 @@ function hardsphere!(
     N::Integer, M::Integer,
     )
 
-    # borders of the area where the particles evolve
+    # Borders of the area where the particles evolve
     x_min, x_max, y_min, y_max = borders(L)
 
     # We introduced overlapping regions (see `indices_per_cell` function) of size 2R(1-tol)
@@ -276,15 +276,17 @@ function hardsphere!(
     # Due to overlaps, neighboring cells will have particles in common and will therefore perform simultaneous accesses 
     # during collision corrections. To avoid it, cells are separated in 4 groups : considering cells division as a checkerboard 
     # (here indices_per_cell is just a 1 dimension list), they correspond to even/even, even/odd, odd/even, odd/odd indices of the cells. 
-    # For proper choice of N and M (see above), cells grouped this way by parity  won't ave particles in common because they are spaced 
-    # by exactly one cell horizontally and vertically. As mentioned below, collision corrections are applyed in a "semi-parallel" way: 
+    # For proper choice of N and M (see above), cells grouped this way by parity  won't have particles in common because they are spaced 
+    # by exactly one cell horizontally and vertically. As mentioned below, collision corrections are applied in a "semi-parallel" way: 
     # they are performed in parallel within the 4 groups, but sequentially between them.
-    # Here we compute the corresponding indices for linear indexing in indices_per_cell:
+    # Here we compute the corresponding indices (of the cells not the particles); indices_per_cell has a linear indexing:
+
     even_even_cells_indices = []
     even_odd_cells_indices = []
     odd_even_cells_indices = []
     odd_odd_cells_indices = []
     for i in eachindex(indices_partition)
+        # to switch from linear to row / colum indexing and then check parity of vertical / horizontal index
         if (iseven(((i-1) ÷ M) + 1) && iseven(((i-1) % M) + 1)); push!(even_even_cells_indices,i);
         elseif (iseven(((i-1) ÷ M) + 1) && isodd(((i-1) % M) + 1)); push!(even_odd_cells_indices,i);
         elseif (isodd(((i-1) ÷ M) + 1) && iseven(((i-1) % M) + 1)); push!(odd_even_cells_indices,i);
@@ -295,13 +297,14 @@ function hardsphere!(
     superposition_partition = zeros(Int, length(indices_partition))
     # initialized as 1 to pass the while loop condition at first iteration
     superpositions = 1
-    # set a limit to avoid to much hardsphere correction iterations
+    # set a limit to avoid too much hardsphere correction iterations
     counter = 0
   
     while superpositions > 0
         # Reset superpositions count
         superposition_partition = zero(superposition_partition)
-        # THREADING REGION: the parallelization is done within the four regions
+        # THREADING REGION: calculation will be carried out in parallel within the four groups, 
+        # but separately between them (sequentially). See explanations above. 
         for parity_cell_indices in [even_even_cells_indices, even_odd_cells_indices, odd_even_cells_indices, odd_odd_cells_indices]
             @threads for cell_index in parity_cell_indices
                 # update distances and superposition matrices
@@ -321,7 +324,8 @@ function hardsphere!(
         end
     end
         
-    # GLOBAL SUPERPOSITIONS EVALUATION
+    # QUALITY TEST TO SEE THE ACTUAL AMOUNT OF SUPERPOSITIONS AFTER CORRECTION
+    # (COMPUTED ON THE OVERALL SYSTEM, NOT PER CELL) 
     # dists_total = pairwise(Euclidean(),xy,xy,dims=1)
     # superpose_total = (dists_total .< 2R*(1-tol)) .* uptriang
     # superpositions_total = sum(superpose_total)
@@ -353,11 +357,11 @@ function hardsphere(
 end
 
 # To simulate periodic boundaries
-function periodic_BC_array!(xy::Array{Float64,2},L::Float64, R)   #when a particle crosses an edge it reappears on the opposite side
+function periodic_BC_array!(xy::Array{Float64,2},L::Float64, R)   # when a particle crosses an edge it reappears on the opposite side
 	# Boundary conditions: horizontal edge
-	idx = abs.(xy[:,1]) .> L/2 + R #I create vector idx in which I have 1 where the absolute value of the x coordinate of the particles is outside the observation area
+	idx = abs.(xy[:,1]) .> L/2 + R # I create vector idx in which I have 1 where the absolute value of the x coordinate of the particles is outside the observation area
 	if any(idx)
-		xy[idx,1] .-= sign.(xy[idx,1]).*L   #where I have uni in idx I make the particle reappear on the opposite side of x with respect to 0
+		xy[idx,1] .-= sign.(xy[idx,1]).*L   # where I have uni in idx I make the particle reappear on the opposite side of x with respect to 0
 	end
 	# Boundary conditions: vertical edge
 	idy = abs.(xy[:,2]) .> L/2 + R
@@ -495,7 +499,6 @@ function circular_wall_condition1g!(xy::Array{Float64,2},L::Float64, R, step_mem
     return nothing
 end
 
-# To simulate elliptical reflective boundary
 function elliptical_wall_condition!(orientation::Array{Float64,1},xy::Array{Float64,2},L::Float64, R, step_mem::Array{Float64,2}) # this condition is for cicular reflective boundary
     # Here the condition is calculated w.r.t to the normal at the intersection point of the radial distance with the wall,
     # this is second method used 
