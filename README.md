@@ -32,12 +32,12 @@ The main code for this part can be found in the *src/inference* folder. Inferenc
 As mentioned, this project is based on a previous version of the simulator and, in particular, a work has been carried out to improve its performances using parallel computing. For performance-related study, the *src/test* folder includes :
 
  - A *profiling* subfolder in which the *profiling.jl* file can be used to generate a *Flame Graph* corresponding to a simulator run. It allows for visualizing execution time repartition.
- - A *performance* folder containing code to run, store and plot statistics on simulation times for multiple runs and parameters. A performance comparison can in particular be established with the original (saved in *ABP original_main.jl* file) and parallel versions of the simulator, varying parallelization parameters. 
+ - A *performance* folder containing code to run, store and plot statistics on simulation times for multiple runs and parameters. In particular, a performance comparison can be established between the original (saved as *ABP original_main.jl*) and parallel versions of the simulator, varying parallelization parameters.
 
 
 ## Other
 
 The *_research/scripts* folder contains secondary codes, earlier versions and tests. 
 
- - The optimization folder contains in particular some methods for sampling and visualizing the objective function used in the optimization process as an "order" metric (see *first_study_expectation.jl*, *first_study_pf.jl*, *landscape_plot.jl*, *landscape_study.jl* and *number_of_samples.jl*).
+ - The optimization folder includes some methods for sampling and visualizing the objective function used in the optimization process as an "order" metric (see *first_study_expectation.jl*, *first_study_pf.jl*, *landscape_plot.jl*, *landscape_study.jl* and *number_of_samples.jl*).
 
