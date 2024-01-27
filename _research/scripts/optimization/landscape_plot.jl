@@ -12,7 +12,7 @@ using Plots
 # (see src/optimization and _research/scripts/optimization).
 
 # Extract data as a dataframe
-# `datadir` from DrWatson provides path to data directory to which we can add "processed/" and "saved_valuations.csv"
+# `datadir` from DrWatson provides path to data directory. We add to the string folder/file names provided in arguments.
 # (see https://juliadynamics.github.io/DrWatson.jl/dev/project/#Navigating-a-Project-1)
 df = CSV.read(datadir("processed", "saved_valuations.csv"), DataFrame)
 

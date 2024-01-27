@@ -7,7 +7,7 @@ using DrWatson
 using DataFrames, CSV
 using ProgressBars
 
-# `projectdir` from DrWatson provides path to current project to which we add elements provided in arguments
+# `projectdir` from DrWatson provides path to current project. We add to the string folder/file names provided in arguments.
 include(projectdir("src", "ABP output.jl"))
 include(projectdir("src", "ABP VOP.jl"))
 
@@ -39,8 +39,8 @@ for params in ProgressBar(all_params)
     # Obtain output from simulator (folder with output files from multiple runs)
     generated_folder = run_multiple((Nt=params[:Nt], Np=params[:Np], L=params[:L], R=params[:R], v=params[:v]); nb_runs=NB_RUNS, wall_condition=WALL_CONDITION)
     for filename in readdir(generated_folder)
-        # to build path to each output file (corresponding to one run); `datadir` function gives path 
-        # for data folder to which we can add "generated_folder/" and filename 
+        # To build path to each output file (corresponding to one run)
+        # `datadir` function gives path to data folder. We add to the string folder/file names provided in arguments.
         # (see https://juliadynamics.github.io/DrWatson.jl/dev/project/#Navigating-a-Project-1) 
         data_path = datadir("sims", generated_folder, filename)
         # compute time averaged polarization factor for one run

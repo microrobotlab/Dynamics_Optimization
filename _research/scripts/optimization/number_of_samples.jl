@@ -1,7 +1,7 @@
 using DrWatson
 using Random
 
-# `projectdir` from DrWatson provides path to current project to which we add elements provided in arguments
+# `projectdir` from DrWatson provides path to current project. We add to the string folder/file names provided in arguments.
 include(projectdir("src", "ABP VOP.jl"))
 
 
@@ -22,7 +22,7 @@ end
 # FOLDER CONTAINING SIMULATION RUNS OUTPUTS
 EXPERIMENT_FOLDER_NAME = "2023-10-25_18:54:37:134_periodic_L=100.0_Np=100_Nt=100_R=1.5_v=10.0"
 # Extract run outputs from given folder located in data/sims/
-# `datadir` function gives path for /data folder to which we add elements in arguments 
+# `datadir` function gives path to /data. We add to the string folder/file names provided in arguments.
 filename_list = readdir(datadir("sims", EXPERIMENT_FOLDER_NAME))
 # Complete paths (broadcast completion with "datadir.(...)")
 filename_list = datadir.("sims", EXPERIMENT_FOLDER_NAME, filename_list)

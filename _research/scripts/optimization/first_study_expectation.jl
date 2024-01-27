@@ -14,7 +14,7 @@ include(projectdir("src", "ABP VOP.jl"))
 function hist_plot_mean_pf(folder_name::String, output_name::String; fit::Bool=false)
     mean_pf_vec = Array{Float64}([])
     # `datadir` function gives path for data folder (provided by DrWatson package). We can add subfolder, "sims" and 
-    # folder_name in the following, to path tp generate complete paths to simulator output files 
+    # folder_name to path to generate complete paths to simulator output files 
     # (see https://juliadynamics.github.io/DrWatson.jl/dev/project/#Navigating-a-Project-1)
     for filename in readdir(datadir("sims", folder_name))
         data_path = datadir("sims", folder_name, filename)
@@ -41,7 +41,7 @@ function hist_plot_mean_pf(folder_name::String, output_name::String; fit::Bool=f
     xlims!(0, 1.0)
     xlabel!("time-averaged polarization factor")
     ylabel!("probability")
-    # `projectdir` from DrWatson provides path to current project to which we add elements provided in arguments
+    # `projectdir` from DrWatson provides path to current project. We add to the string folder/file names provided in arguments.
     savefig(projectdir("plots", final_output_name))  
 end
 

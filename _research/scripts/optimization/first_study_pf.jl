@@ -1,7 +1,7 @@
 using DrWatson
 using Plots, Indicators, Temporal, Statistics
 
-# `projectdir` from DrWatson provides path to current project to which we add elements provided in arguments
+# `projectdir` from DrWatson provides path to current project. We add to the string folder/file names provided in arguments.
 include(projectdir("src", "ABP VOP.jl"))
 
 # Plot polarization factor over time without time averaging (see src/optimization/ABP VOP.jl).
@@ -20,7 +20,7 @@ function plot_pf(filename::String, output_name::String, window::Integer)
     ylims!(0, 1.0) # polarization factor ∈ [0,1] so plot in this range to stay objective
     xlabel!("time")
     ylabel!("polarization factor")
-    # `projectdir` from DrWatson provides path to current project to which we add elements provided in arguments
+    # `projectdir` from DrWatson provides path to current project. We add to the string folder/file names provided in arguments.
     savefig(projectdir("plots", output_name))    
 end
 

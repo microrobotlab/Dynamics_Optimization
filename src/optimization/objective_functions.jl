@@ -4,7 +4,7 @@ using DrWatson
 using Optim
 using Plots
 
-# `projectdir` from DrWatson provides path to current project to which we add elements provided in arguments
+# `projectdir` from DrWatson provides path to current project. We add to the string folder/file names provided in arguments.
 include(projectdir("src", "ABP output.jl"))
 include(projectdir("src", "ABP VOP.jl"))
 

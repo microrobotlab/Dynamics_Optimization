@@ -41,7 +41,7 @@ using PyCall
 using DrWatson
 using ProgressBars
 
-# `srcdir` from DrWatson provides path to src/ to which we add elements provided in arguments
+# `srcdir` from DrWatson provides path to src/. We add to the string folder/file names provided in arguments.
 include(srcdir("ABP output.jl"))
 include("utils_inference.jl")
 pysindy = pyimport("pysindy")

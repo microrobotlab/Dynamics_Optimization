@@ -12,11 +12,11 @@ using BenchmarkTools, Random
 using ProgressBars
 using JSON3
 
-# `srcdir` from DrWatson provides path to src/ to which we add elements provided in arguments
+# `srcdir` from DrWatson provides path to src/. We add to the string folder/file names provided in arguments.
 include(srcdir("ABP file.jl"))
 include(srcdir("ABP output.jl"))
 # for comparison with original version
-# `projectdir` from DrWatson provides path to current project to which we add elements provided in arguments
+# same as `srcdir` above, with general project folder
 include(projectdir("test", "ABP main_original.jl"))
 include(srcdir("ABP file.jl"))
 include("benchmarking_struct.jl")
@@ -63,7 +63,7 @@ BenchmarkTools.DEFAULT_PARAMETERS.seconds = 7200
 
 
 # ----- RUNTIME MEASUREMENTS
-# `datadir` from DrWatson provides path to data directory to which we can add "processed/" and "benchmarking_outputs/"
+# `datadir` from DrWatson provides path to data directory. We add to the string folder/file names provided in arguments.
 folderpath = datadir("processed", "benchmarking_outputs")
 # time marker for filename (see `instance_marker()` function at `src/ABP file.jl`)
 filename = instance_marker() * "_benchmarking" * ".json" 

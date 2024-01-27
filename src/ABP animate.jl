@@ -50,7 +50,7 @@ function animate!(xyθ; parameters::NamedTuple, wall_condition::String, collisio
         # Use `instance_marker` to generate filename (see ABP file.jl)
         animation_filename = instance_marker(parameters=parameters, wall_condition=wall_condition, collision_correction=collision_correction) * "_animation.gif"
     end
-    # `plotsdir()` gives plots folder path (provided by DrWatson package) to which we can add animation_filename
+    # `plotsdir()` gives plots folder path (provided by DrWatson package). We add to the string folder/file names provided in arguments.
     animation_filepath = plotsdir(animation_filename)
 
     gif(anim, animation_filepath)
@@ -98,7 +98,7 @@ function plot_trajectory_trace!(xyθ; parameters::NamedTuple, wall_condition::St
     if(plot_filename === nothing) # if no name given for plot output
         plot_filename = instance_marker(parameters=parameters, wall_condition=wall_condition) * "_trace_plot.svg"
     end
-    # `plotsdir()` gives plots folder path (provided by DrWatson package) to which we can add plot_filename
+    # `plotsdir()` gives plots folder path (provided by DrWatson package). We add to the string folder/file names provided in arguments.
     plot_filepath = plotsdir(plot_filename)
 
     savefig(plot_filepath)

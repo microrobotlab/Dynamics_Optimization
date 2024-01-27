@@ -5,7 +5,7 @@
 using DrWatson
 using Plots,Distances,NaNStatistics,CSV, DataFrames
 
-# `srcdir` from DrWatson provides path to src/ to which we add elements provided in arguments
+# `srcdir` from DrWatson provides path to src/. We add to the string folder/file names provided in arguments.
 include(srcdir("ABP main_parallel.jl"))
 include(srcdir("ABP file.jl"))
 include(srcdir("ABP analysis.jl"))
@@ -47,7 +47,7 @@ Save output in CSV files (one per run) with adjustable `stride` and return corre
 function run(parameters::NamedTuple, nb_runs::Integer; wall_condition::String="periodic", stride::Integer=1)
     experiment_marker = instance_marker(parameters, wall_condition)
     # automatic output file name generation depending on parameters 
-    # `datadir` from DrWatson provides path to data directory to which we can add "sims/" and experiment_marker
+    # `datadir` from DrWatson provides path to data directory. We add to the string folder/file names provided in arguments.
     simulation_folder_path = datadir("sims", experiment_marker)
     mkdir(simulation_folder_path)
     # for each run
@@ -69,7 +69,7 @@ Save output in CSV files (one per run) with adjustable `stride` and return corre
 """
 function run(param_file_name::String, nb_runs::Integer; wall_condition::String="periodic", stride::Integer=1)
     # extract parameters instances from given file
-    # `datadir` from DrWatson provides path to data directory to which we can add "parameters/" and param_file_name
+    # `datadir` from DrWatson provides path to data directory. We add to the string folder/file names provided in arguments.
     parameter_instances = CSV.read(datadir("parameters", param_file_name), DataFrame)
     # to keep track of created folders
     folder_paths_list = Array{String}([])

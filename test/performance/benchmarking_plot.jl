@@ -5,7 +5,7 @@ using Plots
 using JSON3
 using DataFrames
 
-# `srcdir` from DrWatson provides path to src/ to which we add elements provided in arguments
+# `srcdir` from DrWatson provides path to src/. We add to the string folder/file names provided in arguments.
 include(srcdir("ABP file.jl"))
 include("benchmarking_struct.jl")
 
@@ -26,7 +26,7 @@ F(X) = minimum(X) / 10^9
 
 # EXTRACT ALL RAW DATA IN ONE SINGLE DATAFRAME 
 # all outputs are located at data/processed/benchmarking_outputs
-# `datadir` from DrWatson provides path to data directory to which we can add "processed/" and "benchmarking_outputs/"
+# `datadir` from DrWatson provides path to data directory. We add to the string folder/file names provided in arguments.
 data_filename_list = readdir(datadir("processed", "benchmarking_outputs"))
 # to have full paths of all files corresponding to the outputs
 data_filepath_list = datadir.("processed", "benchmarking_outputs", data_filename_list)
@@ -72,5 +72,5 @@ plot!(X[1], Y[1], label=labels[1], color=:black, linestyle=:dash, lw=2)
 plot!(X[2:end], Y[2:end], label=permutedims(labels[2:end]), line_z=(1:length(X[2:end]))', color=cgrad(:thermal), colorbar=false, lw=1)
 
 # SAVED IN PLOTS FOLDER
-# `projectdir` from DrWatson provides path to current project to which we add elements provided in arguments
+# `projectdir` from DrWatson provides path to current project. We add to the string folder/file names provided in arguments.
 savefig(projectdir("plots", instance_marker() * "_" * "benchmark.svg"))

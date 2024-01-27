@@ -4,7 +4,7 @@
 using DrWatson
 using ProfileView, BenchmarkTools
 
-# `srcdir` from DrWatson provides path to src/ to which we add elements provided in arguments
+# `srcdir` from DrWatson provides path to src/. We add to the string folder/file names provided in arguments.
 include(srcdir("ABP output.jl"))
 # Same for `projectdir` which provides path to current project 
 include(projectdir("test", "ABP main_original.jl"))

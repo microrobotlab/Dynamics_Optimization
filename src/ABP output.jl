@@ -1,7 +1,7 @@
 using DrWatson
 using Plots,Distances,NaNStatistics,CSV, DataFrames
 
-# `srcdir` from DrWatson provides path to src/ to which we add elements provided in arguments
+# `srcdir` from DrWatson provides path to src/. We add to the string folder/file names provided in arguments.
 include(srcdir("ABP main_parallel.jl"))
 include(srcdir("ABP file.jl"))
 include(srcdir("ABP analysis.jl"))
@@ -80,7 +80,7 @@ function run_multiple(
     # Used for the name of simulator output to make it recognizable and unique
     experiment_marker = instance_marker(parameters=parameters, wall_condition=wall_condition, collision_correction=collision_correction)
     # automatic output file name generation depending on parameters 
-    # `datadir` from DrWatson provides path to data directory to which we can add "sims/" and experiment_marker
+    # `datadir` from DrWatson provides path to data directory. We add to the string folder/file names provided in arguments.
     simulation_folder_path = datadir("sims", experiment_marker)
     mkdir(simulation_folder_path)
     # for each run
@@ -127,7 +127,7 @@ function run_from_file(
     )
 
     # extract parameters instances from given file
-    # `datadir` from DrWatson provides path to data directory to which we can add "parameters/" and param_file_name
+    # `datadir` from DrWatson provides path to data directory. We add to the string folder/file names provided in arguments.
     parameter_instances = CSV.read(datadir("parameters", param_file_name), DataFrame)
     # to keep track of created folders
     folder_paths_list = Array{String}([])

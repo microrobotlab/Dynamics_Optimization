@@ -2,7 +2,7 @@
 
 using DrWatson
 
-# `srcdir` from DrWatson provides path to src/ to which we add elements provided in arguments
+# `srcdir` from DrWatson provides path to src/. We add to the string folder/file names provided in arguments.
 include(srcdir("ABP output.jl"))
 
 
@@ -10,7 +10,7 @@ include(srcdir("ABP output.jl"))
 # SIMULATOR PARAMETERS / "HYPERPARAMETERS" (see src/ABP main_parallel.jl)
 
 # Simulator parameters
-Nt = 100
+Nt = 1000
 Np = 50
 L = 100.
 R = 1.5
