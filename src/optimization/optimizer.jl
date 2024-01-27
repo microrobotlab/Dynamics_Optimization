@@ -5,7 +5,7 @@
 using DrWatson
 using Optimization
 using OptimizationOptimJL
-using OptimizationBBO
+# using OptimizationBBO
 using Optim
 using Random
 
@@ -61,21 +61,22 @@ u0 = [
 # ] # up
 
 
-# ATTEMPT TO DEFINE BOX CONSTRAINTS ON PHYSICAL PARAMETERS
-# SHOULD USE SCIML PACKAGE INSTEAD
-# function F(u, p)
-#     packing_fraction, R, v = u
-#     # wall_condition, nb_runs, N, M = p
-#     lb = [0.1, 0.55, 1.]
-#     ub = [0.3, 1., 10.]
-#     for i in eachindex(u)
-#         if u[i] < lb[i] || u[i] > ub[i]
-#             return Inf
-#         end
-#     end
-#     return mean_pf([Nt, packing_fraction, L, R, v]; p)
-#     # return packing_fraction*R - v
-# end
+# TODO: ATTEMPT TO DEFINE BOX CONSTRAINTS ON PHYSICAL PARAMETERS
+# SHOULD USE SCIML PACKAGE INSTEAD -> SOME ERRORS ARE LIKELY DUE TO INVALIDE 
+# VALUES (e.g. NEGATIVE NUMBER OF PARTICLES) 
+function F(u, p)
+    packing_fraction, R, v = u
+    # wall_condition, nb_runs, N, M = p
+    lb = [0.1, 0.55, 1.]
+    ub = [0.3, 1., 10.]
+    for i in eachindex(u)
+        if u[i] < lb[i] || u[i] > ub[i]
+            return Inf
+        end
+    end
+    return mean_pf([Nt, packing_fraction, L, R, v]; p)
+    # return packing_fraction*R - v
+end
 
 
 # ----- OBJECTIVE FUNCTION (see `objective_functions.jl`) 
